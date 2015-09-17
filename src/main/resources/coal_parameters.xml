@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<parameters>
+	<param key="nbiter" value="40000" />
+	<param key="nbdump" value="10000" />
+	<param key="nbsave" value="100000" />
+	<param key="lambda" value="3" />
+	<param key="kmax" value="30" />
+	<param key="alpha" value="1.0" />
+	<param key="beta" value="200.0" />
+	<param key="L" value="40907" />
+	<param key="burnin" value="4000" />
+	<param key="updates" value="100000" />
+	
+	<param key="pbirthdeath" value="1.0" />
+	<param key="pbirth" value="0.5" />
+	<param key="pheight" value="1.0" />
+	<param key="pposition" value="1.0" />
+</parameters>
