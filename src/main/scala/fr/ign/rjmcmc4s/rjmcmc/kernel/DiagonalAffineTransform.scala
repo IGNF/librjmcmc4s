@@ -13,7 +13,7 @@ class DiagonalAffineTransform extends Transform {
     size = d.size
     mat = ofDim[Double](2, size)
     delta = ofDim[Double](2, size)
-    var det = 1.
+    var det = 1.0
     var i = 0
     val itD = d.iterator
     val itV = v.iterator
@@ -22,13 +22,13 @@ class DiagonalAffineTransform extends Transform {
       val valV = itV.next
       det *= valD
       mat(0)(i) = valD
-      mat(1)(i) = 1. / valD
+      mat(1)(i) = 1.0 / valD
       delta(0)(i) = valV
       delta(1)(i) = -valV / valD
       i += 1
     }
     absJacobian(0) = det.abs
-    absJacobian(1) = (1. / det).abs;
+    absJacobian(1) = (1.0 / det).abs;
   }
   def apply(direct: Boolean, input: Iterable[Double]) = {
     val i = if (direct) 0 else 1

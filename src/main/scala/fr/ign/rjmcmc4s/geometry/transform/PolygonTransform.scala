@@ -15,7 +15,7 @@ class PolygonTransform(val polygon: Polygon, val tolerance: Double = 0.1) extend
     builder.setConstraints(polygon);
     builder.setTolerance(tolerance);
     val triangleCollection = builder.getTriangles(polygon.getFactory()).asInstanceOf[GeometryCollection];
-    var areaSum = 0.
+    var areaSum = 0.0
     val trianglesInPolygon = (0 until triangleCollection.getNumGeometries).map(triangleCollection.getGeometryN(_).asInstanceOf[Polygon]).filter(p => {
       val area = p.getArea
       p.intersection(polygon).getArea() > 0.99 * area
@@ -46,7 +46,7 @@ class PolygonTransform(val polygon: Polygon, val tolerance: Double = 0.1) extend
       val t = iterator.next
       val triangleIndex = triangles.indexWhere(s < _._1)
       val area = triangles(triangleIndex)._1
-      val previousArea = if (triangles.isDefinedAt(triangleIndex - 1)) triangles(triangleIndex - 1)._1 else 0.
+      val previousArea = if (triangles.isDefinedAt(triangleIndex - 1)) triangles(triangleIndex - 1)._1 else 0.0
       //val triangle = triangles.find(s < _._1)
       val triangle = triangles(triangleIndex)._2
       val tmp = Math.sqrt((s - previousArea) / (area - previousArea))
@@ -65,7 +65,7 @@ class PolygonTransform(val polygon: Polygon, val tolerance: Double = 0.1) extend
       val y3 = p3.y
       val x = a * x1 + b * x2 + c * x3;
       val y = a * y1 + b * y2 + c * y3;
-      new TransformResult(Seq(x, y), 1. / totalArea)
+      new TransformResult(Seq(x, y), 1.0 / totalArea)
     } else {
       val s = iterator.next
       val t = iterator.next
