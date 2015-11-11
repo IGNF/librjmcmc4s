@@ -75,7 +75,7 @@ object CoalApp extends App {
   implicit val rng = new MersenneTwister(1)
   val KDistribution = new PoissonDistribution(rng, lambda, Kmax)
   val HDistribution = new GammaDistribution(rng, alpha, beta)
-  val SDistribution = new UniformDistribution(rng, 0., L)
+  val SDistribution = new UniformDistribution(rng, 0.0, L)
   val acceptance = new MetropolisAcceptance
   val density = new CoalSampler(rng, KDistribution, HDistribution, SDistribution)
   var configuration = new CoalConfiguration(new Likelihood(y), L)
@@ -89,7 +89,7 @@ object CoalApp extends App {
   //  val deathK: Configuration => Double = conf => conf match {
   //    case config: CoalConfiguration => if (config.K == 0) 0. else c * Math.min(1., KDistribution.pdfRatio(config.K - 1, config.K))
   //  }
-  val birthDeath: Configuration => Double = c => 9.
+  val birthDeath: Configuration => Double = c => 9.0
   //  val birth_choice: Configuration => Double = c => c match {
   //    case config: CoalConfiguration => if (config.K == 0) 1. else if (config.K == Kmax) 0. else {
   //      val ratio = KDistribution.pdf(config.K + 1) / (KDistribution.pdf(config.K + 1) + KDistribution.pdf(config.K - 1))
@@ -98,18 +98,18 @@ object CoalApp extends App {
   //    }
   //  }
   val birth_ratio: (Boolean, Configuration) => Double = (d, c) => (d, c) match {
-    case (true, config: CoalConfiguration) => if (config.K == 0) 1. else KDistribution.pdfRatio(config.K, config.K + 1)
-    case (false, config: CoalConfiguration) => if (config.K == Kmax) 1. else KDistribution.pdfRatio(config.K, config.K - 1)
-    case _ => 0.
+    case (true, config: CoalConfiguration) => if (config.K == 0) 1.0 else KDistribution.pdfRatio(config.K, config.K + 1)
+    case (false, config: CoalConfiguration) => if (config.K == Kmax) 1.0 else KDistribution.pdfRatio(config.K, config.K - 1)
+    case _ => 0.0
   }
   val birthdeathKernel = new Kernel(new BirthView(rng), new DeathView(rng), variate, NullVariate, new BirthDeathTransform, birthDeath, /*birth_choice, */ birth_ratio)
   birthdeathKernel.name = "BirthDeath"
 
-  val height: Configuration => Double = c => 1.
+  val height: Configuration => Double = c => 1.0
   val heightKernel = new Kernel(new HeightView(rng), new HeightView(rng), variate, variate, new HeightTransform, height)
   heightKernel.name = "Height"
 
-  val position: Configuration => Double = c => c match { case config: CoalConfiguration => if (config.K == 0) 0. else 1. }
+  val position: Configuration => Double = c => c match { case config: CoalConfiguration => if (config.K == 0) 0.0 else 1.0 }
   val positionKernel = new Kernel(new PositionView(rng), new PositionView(rng), variate, variate, new PositionTransform, position)
   positionKernel.name = "Position"
 
@@ -161,7 +161,7 @@ object CoalApp extends App {
   //  }
   for (x <- (0 to L)) {
     //    val s = meanrate(x) / updates
-    val s = list.foldLeft(0.)((s, c) => s + c.getHeight(x)) / updates
+    val s = list.foldLeft(0.0)((s, c) => s + c.getHeight(x)) / updates
     //    var sum = 0.
     //    for (c <- list) {
     //      sum += FastMath.exp(c.getPosterior(x))
