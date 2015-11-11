@@ -16,7 +16,7 @@ class DeathView(val rng: RandomGenerator) extends View {
   def dimension = 5
   def pdf(c: Configuration, m: Modification, output: MutableList[Double]): Double = (c, m) match {
     case (configuration: CoalConfiguration, modification: CoalModification) =>
-      if (configuration.K < 1) return 0.
+      if (configuration.K < 1) return 0.0
       val j = configuration.K match {
         case 1 => 0
         case _ => new UniformIntegerDistribution(rng, 0, configuration.K - 1).sample
@@ -32,7 +32,7 @@ class DeathView(val rng: RandomGenerator) extends View {
       output += position0
       output += position1
       output += position2
-      1. / configuration.K
+      1.0 / configuration.K
   }
   def inversePdf(c: Configuration, m: Modification, input: Iterable[Double]) = (c, m) match {
     case (configuration: CoalConfiguration, modification: CoalModification) =>
@@ -44,6 +44,6 @@ class DeathView(val rng: RandomGenerator) extends View {
       val j = configuration.S.lastIndexWhere(x => ss > x)
 //      println("\tdeath inversePdf  ss = "  + ss + " j = " + j + " h0 = " + height0 + " h1 = " + height1 + " p0 " + position0 + " with K = " + configuration.K)
       modification.birth = Birth(j, height0, height1, ss)
-      1. / (configuration.K + 1)
+      1.0 / (configuration.K + 1)
   }
 }

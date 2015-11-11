@@ -26,7 +26,7 @@ class BirthView(val rng: RandomGenerator) extends View {
       output += position0
       output += position1
       output += ss
-      1. / configuration.L
+      1.0 / configuration.L
   }
   def inversePdf(c: Configuration, m: Modification, input: Iterable[Double]) = (c, m) match {
     case (configuration: CoalConfiguration, modification: CoalModification) =>
@@ -39,6 +39,6 @@ class BirthView(val rng: RandomGenerator) extends View {
       val j = configuration.S.lastIndexWhere(x => position1 > x)
 //      println("\tbirth inversePdf j = " + j + " with K = " + configuration.K)
       modification.death = Death(j, height1)
-      1. / configuration.L
+      1.0 / configuration.L
   }
 }

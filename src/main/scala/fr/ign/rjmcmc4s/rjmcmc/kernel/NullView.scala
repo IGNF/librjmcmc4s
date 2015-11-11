@@ -6,7 +6,7 @@ import scala.collection.mutable.MutableList
 import fr.ign.rjmcmc4s.configuration.Modification
 
 object NullView extends View {
-  def pdf(c: Configuration, m: Modification, output: MutableList[Double]) = 1.
-  def inversePdf(c: Configuration, m: Modification, input: Iterable[Double]) = 1.
+  def pdf(c: Configuration, m: Modification, output: MutableList[Double]) = 1.0
+  def inversePdf(c: Configuration, m: Modification, input: Iterable[Double]) = 1.0
   def dimension = 0
 }

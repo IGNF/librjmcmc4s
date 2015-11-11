@@ -20,12 +20,12 @@ trait Acceptance {
 }
 
 class Sampler(val density: Density, val acceptance: Acceptance, val kernels: Seq[Kernel]) {
-  var acceptance_probability: Double = 0.
-  var temperature: Double = 0.
-  var delta: Double = 0.
-  var green_ratio: Double = 0.
-  var kernel_ratio: Double = 0.
-  var ref_pdf_ratio: Double = 0.
+  var acceptance_probability: Double = 0.0
+  var temperature: Double = 0.0
+  var delta: Double = 0.0
+  var green_ratio: Double = 0.0
+  var kernel_ratio: Double = 0.0
+  var ref_pdf_ratio: Double = 0.0
   var accepted: Boolean = false
   var kernel_id: Int = 0
 
@@ -39,7 +39,7 @@ class Sampler(val density: Density, val acceptance: Acceptance, val kernels: Seq
       else (kf.apply(x, kernels.head), index)
     }
     def randomApply(x: Double, kernels: Seq[Kernel], kf: KernelFunctor) = {
-      val normalisation = kernels.foldLeft(0.)((x, y) => x + y.probability(kf.c))
+      val normalisation = kernels.foldLeft(0.0)((x, y) => x + y.probability(kf.c))
       randomApplyImpl(x * normalisation, 0, kernels, kf)
     }
     this.temperature = temp
@@ -57,7 +57,7 @@ class Sampler(val density: Density, val acceptance: Acceptance, val kernels: Seq
       return
     }
     this.delta = c.deltaEnergy(modif)
-    this.acceptance_probability = FastMath.min(1., acceptance.eval(this.delta, this.temperature, this.green_ratio))
+    this.acceptance_probability = FastMath.min(1.0, acceptance.eval(this.delta, this.temperature, this.green_ratio))
 //    println("\t\tdelta " + delta + " acceptance_probability = " + acceptance_probability)
     this.accepted = (rng.nextDouble() < this.acceptance_probability);
     if (this.accepted) {

@@ -24,8 +24,8 @@ class HeightView(val rng: RandomGenerator) extends View {
 //      println("\tpdf height for j = " + j + " h = " + height1 + " with k = " + configuration.K)
       output += height1
       output += j
-      1. / (configuration.K + 1)
-    case _ => 0.
+      1.0 / (configuration.K + 1)
+    case _ => 0.0
   }
   def inversePdf(c: Configuration, m: Modification, input: Iterable[Double]) = (c, m) match {
     case (configuration: CoalConfiguration, modification: CoalModification) =>
@@ -34,7 +34,7 @@ class HeightView(val rng: RandomGenerator) extends View {
       val j = iterator.next.toInt
 //      println("\tinversePdf height for j = " + j + " hh = " + height1 + " with k = " + configuration.K)
       modification.height = Height(j, height1)
-      1. / (configuration.K + 1)
-    case _ => 0.
+      1.0 / (configuration.K + 1)
+    case _ => 0.0
   }
 }

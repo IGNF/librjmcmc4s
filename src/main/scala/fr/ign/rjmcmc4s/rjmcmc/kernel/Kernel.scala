@@ -7,9 +7,9 @@ import scala.collection.mutable.MutableList
 class KernelResult(val ratio: Double, val modif: Modification)
 
 class Kernel(val view0: View, val view1: View, val variate0: Variate, val variate1: Variate, val transform: Transform,
-  val probability: Configuration => Double = (_ => 1.),
+  val probability: Configuration => Double = (_ => 1.0),
   //    val q: Configuration => Double = (_ => .5),
-  val proposal_ratio: (Boolean, Configuration) => Double = (_, _) => 1.) {
+  val proposal_ratio: (Boolean, Configuration) => Double = (_, _) => 1.0) {
   var name = "kernel"
   var kernelId: Int = 0
   def apply(p: Double, c: Configuration, m: Modification): Double = {
@@ -30,7 +30,7 @@ class Kernel(val view0: View, val view1: View, val variate0: Variate, val variat
 //      println(this.name + "_" + this.kernelId)
       var val0 = new MutableList[Double]
       val J01 = view0.pdf(c, m, val0) // returns the discrete probability that samples the portion of the configuration that is being modified (stored in the modif input)
-      if (J01 == 0) return 0. // abort : view sampling failed
+      if (J01 == 0) return 0.0 // abort : view sampling failed
       val size = this.transform.size - val0.size
       val (var0, phi01) = this.variate0.compute(size)
       //                val phi01 = variate(var0);             // returns the continuous probability that samples the completion variates
@@ -52,7 +52,7 @@ class Kernel(val view0: View, val view1: View, val variate0: Variate, val variat
 //      println(this.name + "_" + this.kernelId)
       var val1 = new MutableList[Double]
       val J10 = view1.pdf(c, m, val1) // returns the discrete probability that samples the portion of the configuration that is being modified (stored in the modif input)
-      if (J10 == 0) return 0. // abort : view sampling failed
+      if (J10 == 0) return 0.0 // abort : view sampling failed
       val size = this.transform.size - val1.size
       val (var1, phi10) = this.variate1.compute(size)
       //      println("val1" + val1)
@@ -65,7 +65,6 @@ class Kernel(val view0: View, val view1: View, val variate0: Variate, val variat
       val var0 = trans.output.drop(view0.dimension)
       val phi01 = this.variate0.pdf(var0); // returns the continuous probability of the inverse variate sampling, arguments are constant
       val J01 = this.view0.inversePdf(c, m, val0); // returns the discrete probability of the inverse view sampling, arguments are constant except val1 that is encoded in modif
-
       val proposal = J01 * phi01 / (J10 * phi10)
       val ratio = this.proposal_ratio(false, c)
 //      println("\t\tjacob = " + jacob + " proposal  = " + (proposal * ratio))

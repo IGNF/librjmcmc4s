@@ -22,7 +22,7 @@ class CoalSampler(val rng: RandomGenerator, val KDistribution: Distribution[Int]
     case configuration: CoalConfiguration => {
       configuration.K = KDistribution.sample
       configuration.H = MutableList.fill(configuration.K + 1)(HDistribution.sample)
-      configuration.S = MutableList[Double](0.) ++ EvenNumberedOrderStatistics(2 * configuration.K + 1, 0., configuration.L)
+      configuration.S = MutableList[Double](0.0) ++ EvenNumberedOrderStatistics(2 * configuration.K + 1, 0.0, configuration.L)
     }
   }
   def pdfRatio(c: Configuration, m: Modification): Double = (c, m) match {
@@ -66,7 +66,7 @@ class CoalSampler(val rng: RandomGenerator, val KDistribution: Distribution[Int]
         val s2 = configuration.position(j + 2)
         ratio *= HDistribution.pdf(h) / (HDistribution.pdf(h0) * HDistribution.pdf(h1))
         //        println("\tdeath prior ratio - j = " + j + " h0 = " + h0 + " h1 = " + h1 + " s0 = " + s0 + " s1 = " + s1 + " s2 = " + s2 + " h' = " + h)
-        ratio *= (L * L) / (2. * k * (2. * k + 1.))
+        ratio *= (L * L) / (2.0 * k * (2.0 * k + 1.0))
         ratio *= (s2 - s0) / ((s1 - s0) * (s2 - s1))
         //        ratio = 1 / ratio
         //        ratio *= L * L * (s2 - s0)

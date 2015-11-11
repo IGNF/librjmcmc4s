@@ -11,9 +11,9 @@ class MetropolisAcceptance extends Acceptance {
    * \f[P_{Metropolis}=\min\left(1,\exp\left(-\Delta E / T\right)\right)\f]
    */
   def eval(delta: Double, temperature: Double, greenRatio: Double) = {
-    if (temperature == 0.) {
+    if (temperature == 0.0) {
       if (delta > 0) {
-        0.
+        0.0
       }
       else {
         if (delta < 0) {

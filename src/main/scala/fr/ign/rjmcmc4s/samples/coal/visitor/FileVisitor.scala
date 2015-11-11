@@ -79,16 +79,16 @@ class FileVisitor(fileName: String) extends Visitor {
         writer.write(separator)
         var acceptedCount = 0
         for (i <- 0 until kernel_size) {
-          writer.write(format(100. * proposed(i) / dump))
+          writer.write(format(100.0 * proposed(i) / dump))
           writer.write(separator)
-          val accept = if (proposed(i) > 0) 100. * accepted(i) / proposed(i) else 0.
+          val accept = if (proposed(i) > 0) 100.0 * accepted(i) / proposed(i) else 0.0
           writer.write(format(accept))
           writer.write(separator)
           acceptedCount += accepted(i)
           proposed(i) = 0
           accepted(i) = 0
         }
-        writer.write(format(100. * acceptedCount / dump))
+        writer.write(format(100.0 * acceptedCount / dump))
         writer.write(separator)
         val clock_temp = System.currentTimeMillis
         writer.write(format((clock_temp - clock).toDouble / dump))

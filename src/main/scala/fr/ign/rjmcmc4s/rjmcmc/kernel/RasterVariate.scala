@@ -14,13 +14,13 @@ class RasterVariate[T <% Double](val rng: RandomGenerator)(pdf: Seq[T], val m_si
   val N = m_size.size
   val m_totsize = m_size.product
   val m_cdf = buildCdf(m_totsize, pdf, m_size).toParArray
-  val m_sum = pdf.foldLeft(0.)((a, b) => a + b)
-  val m_rand = new org.apache.commons.math3.distribution.UniformRealDistribution(rng, 0., 1.)
+  val m_sum = pdf.foldLeft(0.0)((a, b) => a + b)
+  val m_rand = new org.apache.commons.math3.distribution.UniformRealDistribution(rng, 0.0, 1.0)
 
   def buildCdf(totsize: Int, pdf: Seq[T], size: Seq[Int]) = {
 //    println("buildcdf " + totsize)
-    var sum = 0.
-    var cdf = ArrayBuffer(0.)
+    var sum = 0.0
+    var cdf = ArrayBuffer(0.0)
     var start = System.currentTimeMillis()
     for (i <- 0 until totsize) {
       //      if (i % 10000 == 0) {
@@ -67,7 +67,7 @@ class RasterVariate[T <% Double](val rng: RandomGenerator)(pdf: Seq[T], val m_si
     //    end = System.currentTimeMillis
     //    println("pdf " + (end - start))
     //    start = end
-    var output = ArrayBuffer.fill(N)(0.)
+    var output = ArrayBuffer.fill(N)(0.0)
     for (i <- 0 until N) {
       val ix = offset % m_size(i)
       output(i) = (ix + m_rand.sample) / m_size(i)
@@ -95,7 +95,7 @@ class RasterVariate[T <% Double](val rng: RandomGenerator)(pdf: Seq[T], val m_si
     val iterator = it.iterator
     for (i <- 0 until N) {
       val x = iterator.next
-      if (x < 0. || x > 1.) 0.
+      if (x < 0.0 || x > 1.0) 0.0
       val ix = (x * m_size(i)).toInt
       offset += stride * ix
       stride *= m_size(i)

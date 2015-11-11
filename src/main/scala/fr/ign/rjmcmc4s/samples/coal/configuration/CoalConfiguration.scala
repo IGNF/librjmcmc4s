@@ -30,7 +30,7 @@ class CoalModification extends Modification {
 }
 class Likelihood(val y: Seq[Int]) {
   def logLikelihood(conf: CoalConfiguration) = {
-    var result = 0.
+    var result = 0.0
     //    for (v <- y) result += FastMath.log(conf.getHeight(v))
     for (i <- (0 to conf.K)) {
       //      println(i + " h = " + conf.height(i) + " s(i) = " + conf.position(i) + " s(i+1) = " + conf.position(i + 1))
@@ -40,7 +40,7 @@ class Likelihood(val y: Seq[Int]) {
     //      println("v = " + v + " h = " + conf.getHeight(v) + " logh = " + FastMath.log(conf.getHeight(v)))
     //    }
     //    println("A = " + result + " => " + FastMath.exp(result))
-    var sum = 0.
+    var sum = 0.0
     for (i <- (0 to conf.K)) {
       //      println(i + " h = " + conf.height(i) + " s(i) = " + conf.position(i) + " s(i+1) = " + conf.position(i + 1))
       sum += conf.height(i) * (conf.position(i + 1) - conf.position(i))
