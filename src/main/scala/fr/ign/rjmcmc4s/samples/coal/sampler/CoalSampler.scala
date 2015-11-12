@@ -1,9 +1,7 @@
 package fr.ign.rjmcmc4s.samples.coal.sampler
 
 import scala.collection.mutable.MutableList
-
 import org.apache.commons.math3.random.RandomGenerator
-
 import fr.ign.rjmcmc4s.configuration.Configuration
 import fr.ign.rjmcmc4s.configuration.Modification
 import fr.ign.rjmcmc4s.rjmcmc.distribution.Distribution
@@ -11,8 +9,16 @@ import fr.ign.rjmcmc4s.rjmcmc.sampler.ConfigurationSampler
 import fr.ign.rjmcmc4s.rjmcmc.sampler.Density
 import fr.ign.rjmcmc4s.samples.coal.configuration.CoalConfiguration
 import fr.ign.rjmcmc4s.samples.coal.configuration.CoalModification
+import fr.ign.rjmcmc4s.rjmcmc.distribution.GammaDistribution
+import fr.ign.rjmcmc4s.rjmcmc.distribution.PoissonDistribution
+import fr.ign.rjmcmc4s.rjmcmc.distribution.UniformDistribution
 
-class CoalSampler(val rng: RandomGenerator, val KDistribution: Distribution[Int], val HDistribution: Distribution[Double], val SDistribution: Distribution[Double]) extends Density with ConfigurationSampler {
+//class CoalSampler(val rng: RandomGenerator, val KDistribution: Distribution[Int], val HDistribution: Distribution[Double], val SDistribution: Distribution[Double]) extends Density with ConfigurationSampler {
+class CoalSampler(val lambda: Double, val Kmax: Int, val alpha: Double, val beta: Double, val L: Int)(implicit val rng: RandomGenerator) extends Density with ConfigurationSampler {
+  val KDistribution = new PoissonDistribution(rng, lambda, Kmax)
+  val HDistribution = new GammaDistribution(rng, alpha, beta)
+  val SDistribution = new UniformDistribution(rng, 0.0, L)
+
   def EvenNumberedOrderStatistics(N: Int, min: Double, max: Double): MutableList[Double] = {
     val A = MutableList.fill(N)(rng.nextDouble * (max - min) + min)
     val sortedWithIndex = A.sorted.zipWithIndex
@@ -31,8 +37,8 @@ class CoalSampler(val rng: RandomGenerator, val KDistribution: Distribution[Int]
       val k = configuration.K
       if (modification.birth != null) {
         ratio = KDistribution.pdfRatio(k, k + 1)
-        println("birth k ratio = " + ratio)
-        println("birth k ratio = " + (KDistribution.pdf(k + 1) / KDistribution.pdf(k)))
+        //        println("birth k ratio = " + ratio)
+        //        println("birth k ratio = " + (KDistribution.pdf(k + 1) / KDistribution.pdf(k)))
         val L = configuration.L
         val j = modification.birth.j
         val ss = modification.birth.s
@@ -47,10 +53,10 @@ class CoalSampler(val rng: RandomGenerator, val KDistribution: Distribution[Int]
         ratio *= positionRatio
         ratio *= widthRatio
         ratio *= heightRatio
-        println("positionRatio = " + positionRatio)
-        println("widthRatio = " + widthRatio)
-        println("heightRatio = " + heightRatio)
-        println("\tbirth prior ratio " + ratio)
+        //        println("positionRatio = " + positionRatio)
+        //        println("widthRatio = " + widthRatio)
+        //        println("heightRatio = " + heightRatio)
+        //        println("\tbirth prior ratio " + ratio)
       }
       if (modification.death != null) {
         ratio = KDistribution.pdfRatio(k, k - 1)

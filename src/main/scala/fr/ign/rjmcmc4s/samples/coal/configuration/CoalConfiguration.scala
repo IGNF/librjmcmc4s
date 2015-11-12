@@ -65,10 +65,10 @@ class Likelihood(val y: Seq[Int]) {
     val result = newLogLikelihood - oldLogLikelihood
     //    println("\tdeltaLogLikelihood = " + result)
     if (modification.birth != null) {
-      println("birth (" + modification.birth.s + ") " + configuration.height(modification.birth.j) + " => " + modification.birth.h0 + " " + modification.birth.h1)
-      println("   old configuration\n" + configuration)
-      println("   new configuration\n" + newConfiguration)
-      println("   LogLikelihood = " + oldLogLikelihood + " => " + newLogLikelihood + " delta = " + result)
+//      println("birth (" + modification.birth.s + ") " + configuration.height(modification.birth.j) + " => " + modification.birth.h0 + " " + modification.birth.h1)
+//      println("   old configuration\n" + configuration)
+//      println("   new configuration\n" + newConfiguration)
+//      println("   LogLikelihood = " + oldLogLikelihood + " => " + newLogLikelihood + " delta = " + result)
     }
     result
   }
@@ -99,22 +99,8 @@ class CoalConfiguration(val likelihood: Likelihood, val L: Double, var K: Int, v
   def height(index: Int) = H.apply(index)
   def position(index: Int) = if (index <= K) S.apply(index) else L
 
-  def getHeight(x: Int): Double = {
-    val index = S.lastIndexWhere(s => x >= s)
-    //    if (x == L) println("L index = " + index + " H = " + H.apply(index) + " with k = " + K + " " + H.size + " " + position(index))
-    H.apply(index)
-    //    if (x == L) H.last
-    //    if (x < position(current + 1)) H.apply(current)
-    //    else getHeight(x, current + 1)
-  }
-  //  def getPosterior(x: Int) = {
-  //    var result = 0.
-  //    for (index <- (0 to K)) {
-  //      result -= (position(index + 1) - position(index)) * height(index)
-  //    }
-  //    getHeight(x, 0) / result
-  //  }
-//  override def toString = "K= " + K + " H = " + H + " S = " + S + " L = " + L
+  def getHeight(x: Int) = H.apply(S.lastIndexWhere(s => x >= s))
+
   override def toString = {
     var result = "K = " + K+"\n"
     for (i <- (0 to K)) {

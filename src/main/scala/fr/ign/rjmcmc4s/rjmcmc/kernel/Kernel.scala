@@ -6,11 +6,10 @@ import scala.collection.mutable.MutableList
 
 class KernelResult(val ratio: Double, val modif: Modification)
 
-class Kernel(val view0: View, val view1: View, val variate0: Variate, val variate1: Variate, val transform: Transform,
+class Kernel(val name: String, val view0: View, val view1: View, val variate0: Variate, val variate1: Variate, val transform: Transform,
   val probability: Configuration => Double = (_ => 1.0),
   //    val q: Configuration => Double = (_ => .5),
   val proposal_ratio: (Boolean, Configuration) => Double = (_, _) => 1.0) {
-  var name = "kernel"
   var kernelId: Int = 0
   def apply(p: Double, c: Configuration, m: Modification): Double = {
     val prob = this.probability(c)

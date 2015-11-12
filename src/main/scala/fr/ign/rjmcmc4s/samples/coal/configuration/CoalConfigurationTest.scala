@@ -86,52 +86,48 @@ object CoalConfigurationTest extends App {
   println("config = " + configuration)
   println("energy = " + configuration.getEnergy)
 
-  val KDistribution = new PoissonDistribution(rng, lambda, Kmax)
-  val HDistribution = new GammaDistribution(rng, alpha, beta)
-  val SDistribution = new UniformDistribution(rng, 0.0, L)
+//  val KDistribution = new PoissonDistribution(rng, lambda, Kmax)
+//  val HDistribution = new GammaDistribution(rng, alpha, beta)
+//  val SDistribution = new UniformDistribution(rng, 0.0, L)
   val acceptance = new MetropolisAcceptance
-  val density = new CoalSampler(rng, KDistribution, HDistribution, SDistribution)
+  val density = new CoalSampler(lambda, Kmax, alpha, beta, L)
   val variate = new SimpleVariate(rng)
 
-  var c: Double = Math.min(1.0 / Math.min(1, KDistribution.pdf(1) / KDistribution.pdf(0)), 1.0 / Math.min(1, KDistribution.pdf(Kmax - 1) / KDistribution.pdf(Kmax)))
+  var c: Double = Math.min(1.0 / Math.min(1, density.KDistribution.pdf(1) / density.KDistribution.pdf(0)), 1.0 / Math.min(1, density.KDistribution.pdf(Kmax - 1) / density.KDistribution.pdf(Kmax)))
   for (k <- 1 to Kmax - 1)
-    c = Math.min(c, 1.0 / Math.min(1.0, KDistribution.pdf(k + 1) / KDistribution.pdf(k)) + 1.0 / Math.min(1, KDistribution.pdf(k - 1) / KDistribution.pdf(k)))
+    c = Math.min(c, 1.0 / Math.min(1.0, density.KDistribution.pdf(k + 1) / density.KDistribution.pdf(k)) + 1.0 / Math.min(1, density.KDistribution.pdf(k - 1) / density.KDistribution.pdf(k)))
   c = 0.9 * c
   println("c = " + c)
-  def birthK(k: Int) = if (k == Kmax) 0.0 else c * Math.min(1.0, KDistribution.pdfRatio(k + 1, k))
-  def deathK(k: Int) = if (k == 0) 0.0 else c * Math.min(1.0, KDistribution.pdfRatio(k - 1, k))
+  def birthK(k: Int) = if (k == Kmax) 0.0 else c * Math.min(1.0, density.KDistribution.pdfRatio(k + 1, k))
+  def deathK(k: Int) = if (k == 0) 0.0 else c * Math.min(1.0, density.KDistribution.pdfRatio(k - 1, k))
 
   val birthDeath: Configuration => Double = c => c match {
     case config: CoalConfiguration => birthK(config.K) + deathK(config.K)
   }
   val birth_choice: Configuration => Double = c => c match {
     case config: CoalConfiguration => if (config.K == 0) 1.0 else if (config.K == Kmax) 0.0 else {
-      val ratio = KDistribution.pdf(config.K + 1) / (KDistribution.pdf(config.K + 1) + KDistribution.pdf(config.K - 1))
+      val ratio = density.KDistribution.pdf(config.K + 1) / (density.KDistribution.pdf(config.K + 1) + density.KDistribution.pdf(config.K - 1))
       //      println("k = " + config.K + " choice " + ratio)
       Math.min(1.0, ratio)
     }
   }
   val birth_ratio: (Boolean, Configuration) => Double = (d, c) => (d, c) match {
-    case (true, config: CoalConfiguration) => if (config.K == 0) 1.0 else KDistribution.pdfRatio(config.K, config.K + 1)
-    case (false, config: CoalConfiguration) => if (config.K == Kmax) 1.0 else KDistribution.pdfRatio(config.K, config.K - 1)
+    case (true, config: CoalConfiguration) => if (config.K == 0) 1.0 else density.KDistribution.pdfRatio(config.K, config.K + 1)
+    case (false, config: CoalConfiguration) => if (config.K == Kmax) 1.0 else density.KDistribution.pdfRatio(config.K, config.K - 1)
     case _ => 0.0
   }
-  val birthdeathKernel = new Kernel(new BirthView(rng), new DeathView(rng), variate, NullVariate, new BirthDeathTransform, birthDeath, birth_ratio)
-  birthdeathKernel.name = "BirthDeath"
-
+  val birthdeathKernel = new Kernel("BirthDeath", new BirthView(rng), new DeathView(rng), variate, NullVariate, new BirthDeathTransform, birthDeath, birth_ratio)
   val height: Configuration => Double = c => c match {
     case config: CoalConfiguration => if (config.K == 0) (1.0 - (birthK(config.K) + deathK(config.K))) else (1.0 - (birthK(config.K) + deathK(config.K))) / 2.0
   }
-  val heightKernel = new Kernel(new HeightView(rng), new HeightView(rng), variate, variate, new HeightTransform, height)
-  heightKernel.name = "Height"
+  val heightKernel = new Kernel("Height", new HeightView(rng), new HeightView(rng), variate, variate, new HeightTransform, height)
 
   //  val position: Configuration => Double = c => c match { case config: CoalConfiguration => if (config.K == 0) 0. else 1. }
   val position: Configuration => Double = c => c match {
     case config: CoalConfiguration => if (config.K == 0) 0.0 else height(c)
   }
 
-  val positionKernel = new Kernel(new PositionView(rng), new PositionView(rng), variate, variate, new PositionTransform, position)
-  positionKernel.name = "Position"
+  val positionKernel = new Kernel("Position", new PositionView(rng), new PositionView(rng), variate, variate, new PositionTransform, position)
 
   val kernels: Seq[Kernel] = List( birthdeathKernel, heightKernel, positionKernel)
   // new RJMCMC Sampler

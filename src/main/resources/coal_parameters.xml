@@ -9,7 +9,7 @@
 	<param key="beta" value="200.0" />
 	<param key="L" value="40907" />
 	<param key="burnin" value="4000" />
-	<param key="updates" value="100000" />
+	<param key="updates" value="40000" />
 	
 	<param key="pbirthdeath" value="1.0" />
 	<param key="pbirth" value="0.5" />
