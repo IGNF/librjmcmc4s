@@ -29,7 +29,7 @@ class Sampler(val density: Density, val acceptance: Acceptance, val kernels: Seq
   var accepted: Boolean = false
   var kernel_id: Int = 0
 
-  def sample(c: Configuration, temp: Double)(implicit rng: RandomGenerator): Unit = {
+  def sample(c: Configuration, temp: Double = -1.0)(implicit rng: RandomGenerator): Unit = {
     class KernelFunctor(val c: Configuration, m: Modification) {
       def apply(x: Double, k: Kernel) = k.apply(x, c, m)
     }
