@@ -2,7 +2,7 @@
 *.log
 
 # sbt specific
-.cache
+.cache*
 .history
 .lib/
 dist/*
@@ -16,3 +16,9 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 /bin
+
+#other stuff (including eclipse IDE specific)
+.classpath
+.project
+.settings/
+
