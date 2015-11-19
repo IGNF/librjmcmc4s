@@ -32,6 +32,6 @@ class DirectSampler[T](val distribution: Distribution[Int], val objectSampler: O
       for(d <- modification.death) ratio /= objectSampler.pdf(d)
       ratio
     }
-    case _ => 0.
+    case _ => 0.0
   }
 }

@@ -10,7 +10,7 @@ import fr.ign.rjmcmc4s.configuration.Configuration
 import fr.ign.rjmcmc4s.rjmcmc.kernel.View
 import fr.ign.rjmcmc4s.samples.coal.configuration.CoalModification.Position
 
-class PositionView(val rng: RandomGenerator) extends View {
+class PositionView(implicit val rng: RandomGenerator) extends View {
   def dimension = 3
   def pdf(c: Configuration, m: Modification, output: MutableList[Double]): Double = (c, m) match {
     case (configuration: CoalConfiguration, modification: CoalModification) =>

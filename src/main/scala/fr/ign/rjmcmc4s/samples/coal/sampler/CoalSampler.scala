@@ -13,11 +13,10 @@ import fr.ign.rjmcmc4s.rjmcmc.distribution.GammaDistribution
 import fr.ign.rjmcmc4s.rjmcmc.distribution.PoissonDistribution
 import fr.ign.rjmcmc4s.rjmcmc.distribution.UniformDistribution
 
-//class CoalSampler(val rng: RandomGenerator, val KDistribution: Distribution[Int], val HDistribution: Distribution[Double], val SDistribution: Distribution[Double]) extends Density with ConfigurationSampler {
 class CoalSampler(val lambda: Double, val Kmax: Int, val alpha: Double, val beta: Double, val L: Int)(implicit val rng: RandomGenerator) extends Density with ConfigurationSampler {
-  val KDistribution = new PoissonDistribution(rng, lambda, Kmax)
-  val HDistribution = new GammaDistribution(rng, alpha, beta)
-  val SDistribution = new UniformDistribution(rng, 0.0, L)
+  val KDistribution = new PoissonDistribution(lambda, Kmax)
+  val HDistribution = new GammaDistribution(alpha, beta)
+  val SDistribution = new UniformDistribution(0.0, L)
 
   def EvenNumberedOrderStatistics(N: Int, min: Double, max: Double): MutableList[Double] = {
     val A = MutableList.fill(N)(rng.nextDouble * (max - min) + min)

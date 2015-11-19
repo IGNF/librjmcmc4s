@@ -12,7 +12,7 @@ import fr.ign.rjmcmc4s.samples.coal.configuration.CoalModification.Birth
 import org.apache.commons.math3.distribution.UniformRealDistribution
 import fr.ign.rjmcmc4s.samples.coal.configuration.CoalModification.Death
 
-class BirthView(val rng: RandomGenerator) extends View {
+class BirthView(implicit val rng: RandomGenerator) extends View {
   def dimension = 4
   def pdf(c: Configuration, m: Modification, output: MutableList[Double]): Double = (c, m) match {
     case (configuration: CoalConfiguration, modification: CoalModification) =>

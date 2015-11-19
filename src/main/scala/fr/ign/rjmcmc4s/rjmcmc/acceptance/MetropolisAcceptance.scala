@@ -12,13 +12,9 @@ class MetropolisAcceptance extends Acceptance {
    */
   def eval(delta: Double, temperature: Double, greenRatio: Double) = {
     if (temperature == 0.0) {
-      if (delta > 0) {
-        0.0
-      }
+      if (delta > 0) 0.0
       else {
-        if (delta < 0) {
-          1.0
-        }
+        if (delta < 0) 1.0
         else greenRatio
       }
     } else {

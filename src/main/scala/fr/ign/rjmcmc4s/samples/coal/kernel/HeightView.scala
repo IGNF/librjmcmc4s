@@ -12,7 +12,7 @@ import fr.ign.rjmcmc4s.samples.coal.configuration.CoalConfiguration
 import fr.ign.rjmcmc4s.samples.coal.configuration.CoalModification
 import fr.ign.rjmcmc4s.samples.coal.configuration.CoalModification.Height
 
-class HeightView(val rng: RandomGenerator) extends View {
+class HeightView(implicit val rng: RandomGenerator) extends View {
   def dimension = 2
   def pdf(c: Configuration, m: Modification, output: MutableList[Double]): Double = (c, m) match {
     case (configuration: CoalConfiguration, modification: CoalModification) =>

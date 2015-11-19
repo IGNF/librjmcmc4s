@@ -1,7 +1,6 @@
 package fr.ign.rjmcmc4s.rjmcmc.kernel
 
 import scala.collection.mutable.ArrayBuffer
-import scala.collection.parallel.traversable2ops
 
 import org.apache.commons.math3.random.RandomGenerator
 
@@ -10,7 +9,7 @@ import org.apache.commons.math3.random.RandomGenerator
  * <code>size</code> gives the number of elements of the grid in each dimension.
  * <code>pdf</code> gives the unnormalized pdf values of each voxel as a N dimensional array of size (size).
  */
-class RasterVariate[T <% Double](val rng: RandomGenerator)(pdf: Seq[T], val m_size: Seq[Int]) extends Variate {
+class RasterVariate[T <% Double](pdf: Seq[T], val m_size: Seq[Int])(implicit val rng: RandomGenerator) extends Variate {
   val N = m_size.size
   val m_totsize = m_size.product
   val m_cdf = buildCdf(m_totsize, pdf, m_size).toParArray

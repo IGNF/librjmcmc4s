@@ -33,23 +33,21 @@ import fr.ign.rjmcmc4s.samples.coal.visitor.FileVisitor
 
 class CoalApp(val y: Seq[Int], val L: Int, val Kmax: Int, val lambda: Double, val alpha: Double, val beta: Double, val burnin: Int, val updates: Int) {
   def apply(implicit rng: RandomGenerator): MutableList[CoalConfiguration] = {
-//    val KDistribution = new PoissonDistribution(rng, lambda, Kmax)
-//    val HDistribution = new GammaDistribution(rng, alpha, beta)
-//    val SDistribution = new UniformDistribution(rng, 0.0, L)
     val acceptance = new MetropolisAcceptance
     val density = new CoalSampler(lambda, Kmax, alpha, beta, L)
     var configuration = new CoalConfiguration(new Likelihood(y), L)
     density.sample(configuration)
-    val variate = new SimpleVariate(rng)
+    val variate = new SimpleVariate
     val birthDeath: Configuration => Double = c => 9.0
     val birth_ratio: (Boolean, Configuration) => Double = (d, c) => (d, c) match {
       case (true, config: CoalConfiguration) => if (config.K == 0) 1.0 else density.KDistribution.pdfRatio(config.K, config.K + 1)
       case (false, config: CoalConfiguration) => if (config.K == Kmax) 1.0 else density.KDistribution.pdfRatio(config.K, config.K - 1)
+      case _ => 0.0
     }
-    val birthdeathKernel = new Kernel("BirthDeath", new BirthView(rng), new DeathView(rng), variate, NullVariate, new BirthDeathTransform, birthDeath, /*birth_choice, */ birth_ratio)
-    val heightKernel = new Kernel("Height", new HeightView(rng), new HeightView(rng), variate, variate, new HeightTransform, _ => 1.0)
+    val birthdeathKernel = new Kernel("BirthDeath", new BirthView, new DeathView, variate, NullVariate, new BirthDeathTransform, birthDeath, /*birth_choice, */ birth_ratio)
+    val heightKernel = new Kernel("Height", new HeightView, new HeightView, variate, variate, new HeightTransform, _ => 1.0)
     val position: Configuration => Double = c => c match { case config: CoalConfiguration => if (config.K == 0) 0.0 else 1.0 }
-    val positionKernel = new Kernel("Position", new PositionView(rng), new PositionView(rng), variate, variate, new PositionTransform, position)
+    val positionKernel = new Kernel("Position", new PositionView, new PositionView, variate, variate, new PositionTransform, position)
     val kernels: Seq[Kernel] = List(birthdeathKernel, heightKernel, positionKernel)
     // new RJMCMC Sampler
     val sampler = new Sampler(density, acceptance, kernels)
@@ -106,7 +104,7 @@ object CoalApp extends App {
   //  val burnin = parameters.getInt("burnin")
   //  val updates = parameters.getInt("updates")
   //  val app = new CoalApp(y, L, Kmax, lambda, alpha, beta, burnin, updates)
-  val app = new CoalApp(y, 40907, 30, 3, 1, 200, 4000, 20000)
+  val app = new CoalApp(y, 40907, 30, 3, 1, 200, 4000, 10000)
   implicit val rng = new MersenneTwister(21)
   val l = app.apply
   app.posteriorMean(l.toSeq, new File("result.txt"))

@@ -12,7 +12,7 @@ import fr.ign.rjmcmc4s.samples.coal.configuration.CoalModification.Death
 import org.apache.commons.math3.distribution.UniformIntegerDistribution
 import fr.ign.rjmcmc4s.samples.coal.configuration.CoalModification.Birth
 
-class DeathView(val rng: RandomGenerator) extends View {
+class DeathView(implicit val rng: RandomGenerator) extends View {
   def dimension = 5
   def pdf(c: Configuration, m: Modification, output: MutableList[Double]): Double = (c, m) match {
     case (configuration: CoalConfiguration, modification: CoalModification) =>

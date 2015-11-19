@@ -15,7 +15,7 @@ object RasterVariateTest extends App {
     6, 2, 7, 2, 9)
   val size = Seq[Int](5, 6)
   implicit val rng = new MersenneTwister(1)
-  val variate = new RasterVariate[Int](rng)(value, size)
+  val variate = new RasterVariate[Int](value, size)
 
   var count = ArrayBuffer.fill(size(0) * size(1))(0)
   for (i <- 0 until iter) {

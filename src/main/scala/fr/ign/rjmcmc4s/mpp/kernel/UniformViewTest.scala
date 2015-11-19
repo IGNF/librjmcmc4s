@@ -24,7 +24,7 @@ object UniformViewTest extends App {
     def iterator: Iterator[Double] = new TestObjectIterator
     override def toString(): String = "(" + x + ", " + y + ")"
   }
-  val rng = new MersenneTwister(1111111)
+  implicit val rng = new MersenneTwister(1111111)
   class TestObjectBuilder extends ObjectBuilder[TestObject] {
     def dimension = 2
     def create(it: Iterable[Double]) =
@@ -46,7 +46,7 @@ object UniformViewTest extends App {
   })
   val m = c.modification
   println("size = " + c.size)
-  val view = new UniformView[TestObject](rng, 1, new TestObjectBuilder)
+  val view = new UniformView[TestObject](1, new TestObjectBuilder)
   val output = new MutableList[Double]
   val p = view.pdf(c, m, output)
   println("p = " + p)

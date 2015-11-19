@@ -6,6 +6,7 @@ import fr.ign.rjmcmc4s.configuration.Modification
 import fr.ign.rjmcmc4s.rjmcmc.kernel.Kernel
 import fr.ign.rjmcmc4s.rjmcmc.kernel.KernelResult
 import org.apache.commons.math3.util.FastMath
+import com.typesafe.scalalogging.LazyLogging
 
 trait Density {
   def pdfRatio(c: Configuration, m: Modification): Double
@@ -19,7 +20,7 @@ trait Acceptance {
   def eval(delta: Double, temp: Double, greenRatio: Double): Double
 }
 
-class Sampler(val density: Density, val acceptance: Acceptance, val kernels: Seq[Kernel]) {
+class Sampler(val density: Density, val acceptance: Acceptance, val kernels: Seq[Kernel]) extends LazyLogging {
   var acceptance_probability: Double = 0.0
   var temperature: Double = 0.0
   var delta: Double = 0.0
@@ -50,7 +51,7 @@ class Sampler(val density: Density, val acceptance: Acceptance, val kernels: Seq
     this.kernel_id = apply._2
     this.ref_pdf_ratio = density.pdfRatio(c, modif)
     this.green_ratio = kernel_ratio * ref_pdf_ratio
-//    println("\t\tsampler: green_ratio = " + green_ratio + " = kernel_ratio = " + kernel_ratio + " * prior_ratio = " + ref_pdf_ratio)
+    logger.debug(s"\t\tsampler: green_ratio = $green_ratio = kernel_ratio = $kernel_ratio * prior_ratio = $ref_pdf_ratio")
     if (this.green_ratio <= 0) {
       this.delta = 0;
       this.accepted = false;
@@ -58,11 +59,10 @@ class Sampler(val density: Density, val acceptance: Acceptance, val kernels: Seq
     }
     this.delta = c.deltaEnergy(modif)
     this.acceptance_probability = FastMath.min(1.0, acceptance.eval(this.delta, this.temperature, this.green_ratio))
-//    println("\t\tdelta " + delta + " acceptance_probability = " + acceptance_probability)
+    logger.debug(s"PROPOSED $this.kernel_id\n\tdelta = $delta acceptance_probability = $acceptance_probability")
     this.accepted = (rng.nextDouble() < this.acceptance_probability);
     if (this.accepted) {
-//      println("ACCEPTED " + this.kernel_id)
-//      println("\t\tdelta " + delta + " acceptance_probability = " + acceptance_probability)
+      logger.debug(s"ACCEPTED $this.kernel_id\n\tdelta = $delta acceptance_probability = $acceptance_probability")
       modif.apply(c);
     }
   }

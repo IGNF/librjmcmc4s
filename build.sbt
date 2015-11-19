@@ -6,7 +6,7 @@ version := "1.0"
 organization := "fr.ign"
 
 // set the Scala version used for the project
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.7"
 
 // add a maven-style repository
 resolvers ++= Seq(
@@ -29,6 +29,10 @@ libraryDependencies += "org.geotools" % "gt-shapefile" % "13.1"
 libraryDependencies += "org.geotools" % "gt-epsg-wkt" % "13.1"
 
 libraryDependencies += "org.geotools" % "gt-cql" % "13.1"
+
+libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
+
+libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
 
 EclipseKeys.withSource := true
 //

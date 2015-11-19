@@ -17,7 +17,7 @@ trait ObjectBuilder[T] {
   def create(it: Iterable[Double]): T
 }
 
-class UniformView[T <: Iterable[Double]](val rng: RandomGenerator, val n: Int, val builder: ObjectBuilder[T]) extends View {
+class UniformView[T <: Iterable[Double]](val n: Int, val builder: ObjectBuilder[T])(implicit val rng: RandomGenerator) extends View {
   val dimension = builder.dimension
   def pdf(c: Configuration, m: Modification, output: MutableList[Double]) = (c, m) match {
     case (configuration: ListBufferConfiguration[T], modification: BirthDeathModification[T]) =>
@@ -36,20 +36,20 @@ class UniformView[T <: Iterable[Double]](val rng: RandomGenerator, val n: Int, v
           sample(numberOfSamples - 1, size - 1, previous ++ List(shifted), denom * size)
         }
       }
-      1. / sample(n, configuration.size, Nil, 1.)
-    case _ => 0.
+      1.0 / sample(n, configuration.size, Nil, 1.0)
+    case _ => 0.0
   }
   def inversePdf(c: Configuration, m: Modification, input: Iterable[Double]) = (c, m) match {
     case (configuration: ListBufferConfiguration[T], modification: BirthDeathModification[T]) =>
       modification.birth.clear
       val begin = configuration.size - modification.death.size + 1
-      val denom = (begin until begin + n).foldLeft(1.)((x, y) => {
+      val denom = (begin until begin + n).foldLeft(1.0)((x, y) => {
         val t = this.builder.create(input)
 //        val t = T(input)
         modification.insertBirth(t)
         x * y
       })
-      1. / denom
-    case _ => 0.
+      1.0 / denom
+    case _ => 0.0
   }
 }

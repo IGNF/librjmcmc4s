@@ -2,7 +2,7 @@ package fr.ign.rjmcmc4s.rjmcmc.distribution
 
 import org.apache.commons.math3.random.RandomGenerator
 
-class PoissonDistribution(val rng: RandomGenerator, mean: Double, max: Int) extends Distribution[Int] {
+class PoissonDistribution(mean: Double, max: Int)(implicit val rng: RandomGenerator) extends Distribution[Int] {
   val math = new org.apache.commons.math3.distribution.PoissonDistribution(rng, mean, org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_EPSILON, org.apache.commons.math3.distribution.PoissonDistribution.DEFAULT_MAX_ITERATIONS)
   def pdfRatio(n0: Int, n1: Int) = {
     var res = 1.0

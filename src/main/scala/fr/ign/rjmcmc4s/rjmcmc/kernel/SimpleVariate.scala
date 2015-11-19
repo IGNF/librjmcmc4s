@@ -7,7 +7,7 @@ import org.apache.commons.math3.random.RandomGenerator
  * A variate.
  * @author Julien Perret
  */
-class SimpleVariate(val rng: RandomGenerator) extends Variate {
+class SimpleVariate(implicit rng: RandomGenerator) extends Variate {
   val rand = new UniformRealDistribution(rng, 0, 1);
   /**
    * Returns the continuous probability that samples the completion variates.

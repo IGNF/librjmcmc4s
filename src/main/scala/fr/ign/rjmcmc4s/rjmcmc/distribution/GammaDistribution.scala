@@ -2,7 +2,7 @@ package fr.ign.rjmcmc4s.rjmcmc.distribution
 
 import org.apache.commons.math3.random.RandomGenerator
 
-class GammaDistribution(val rng: RandomGenerator, alpha: Double, beta: Double) extends Distribution[Double] {
+class GammaDistribution(alpha: Double, beta: Double)(implicit val rng: RandomGenerator) extends Distribution[Double] {
   val math = new org.apache.commons.math3.distribution.GammaDistribution(rng, alpha, 1/beta, org.apache.commons.math3.distribution.GammaDistribution.DEFAULT_INVERSE_ABSOLUTE_ACCURACY)
   def pdfRatio(n0: Double, n1: Double) = {
     var res = 1.0
