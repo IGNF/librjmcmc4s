@@ -31,39 +31,22 @@ class CoalModification extends Modification {
 class Likelihood(val y: Seq[Int]) {
   def logLikelihood(conf: CoalConfiguration) = {
     var result = 0.0
-    //    for (v <- y) result += FastMath.log(conf.getHeight(v))
     for (i <- (0 to conf.K)) {
-      //      println(i + " h = " + conf.height(i) + " s(i) = " + conf.position(i) + " s(i+1) = " + conf.position(i + 1))
       result += FastMath.log(conf.height(i)) * y.count(yy => yy >= conf.position(i) && yy < conf.position(i + 1))
     }
-    //    for (v <- y) {
-    //      println("v = " + v + " h = " + conf.getHeight(v) + " logh = " + FastMath.log(conf.getHeight(v)))
-    //    }
-    //    println("A = " + result + " => " + FastMath.exp(result))
     var sum = 0.0
     for (i <- (0 to conf.K)) {
-      //      println(i + " h = " + conf.height(i) + " s(i) = " + conf.position(i) + " s(i+1) = " + conf.position(i + 1))
       sum += conf.height(i) * (conf.position(i + 1) - conf.position(i))
     }
-    //    println("B = " + sum + " => " + FastMath.exp(sum))
-    //    println("L = " + (result - sum) + " => " + FastMath.exp(result - sum))
     result - sum
   }
-  def get(configuration: CoalConfiguration) = {
-    val logLikelihoodValue = logLikelihood(configuration)
-    logLikelihoodValue
-  }
+  def get(configuration: CoalConfiguration) = logLikelihood(configuration)
   def delta(configuration: CoalConfiguration, modification: CoalModification) = {
-    //    println("   configuration = " + configuration)
     val oldLogLikelihood = configuration.getEnergy
-    //    println("\toldLogLikelihood = " + oldLogLikelihood)
     val newConfiguration = new CoalConfiguration(configuration)
     modification.apply(newConfiguration)
-    //    println("   newConfiguration = " + newConfiguration)
     val newLogLikelihood = newConfiguration.getEnergy
-    //    println("\tnewLogLikelihood = " + newLogLikelihood)
     val result = newLogLikelihood - oldLogLikelihood
-    //    println("\tdeltaLogLikelihood = " + result)
     if (modification.birth != null) {
 //      println("birth (" + modification.birth.s + ") " + configuration.height(modification.birth.j) + " => " + modification.birth.h0 + " " + modification.birth.h1)
 //      println("   old configuration\n" + configuration)
@@ -98,14 +81,11 @@ class CoalConfiguration(val likelihood: Likelihood, val L: Double, var K: Int, v
   }
   def height(index: Int) = H.apply(index)
   def position(index: Int) = if (index <= K) S.apply(index) else L
-
   def getHeight(x: Int) = H.apply(S.lastIndexWhere(s => x >= s))
-
   override def toString = {
     var result = "K = " + K+"\n"
     for (i <- (0 to K)) {
       result += "" + position(i) + "; " + height(i) + "; " + (position(i + 1) - position(i)) + "\n"
-//      sum += conf.height(i) * (conf.position(i + 1) - conf.position(i))
     }
     result
   }

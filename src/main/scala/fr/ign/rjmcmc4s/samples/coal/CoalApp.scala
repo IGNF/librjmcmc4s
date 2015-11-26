@@ -40,8 +40,8 @@ class CoalApp(val y: Seq[Int], val L: Int, val Kmax: Int, val lambda: Double, va
     val variate = new SimpleVariate
     val birthDeath: Configuration => Double = c => 9.0
     val birth_ratio: (Boolean, Configuration) => Double = (d, c) => (d, c) match {
-      case (true, config: CoalConfiguration) => if (config.K == 0) 1.0 else density.KDistribution.pdfRatio(config.K, config.K + 1)
-      case (false, config: CoalConfiguration) => if (config.K == Kmax) 1.0 else density.KDistribution.pdfRatio(config.K, config.K - 1)
+      case (true, config: CoalConfiguration) => if (config.K == 0) 1.0 else if (config.K == Kmax) 0.0 else density.KDistribution.pdfRatio(config.K, config.K + 1)
+      case (false, config: CoalConfiguration) => if (config.K == 0) 0.0 else if (config.K == Kmax) 1.0 else density.KDistribution.pdfRatio(config.K, config.K - 1)
       case _ => 0.0
     }
     val birthdeathKernel = new Kernel("BirthDeath", new BirthView, new DeathView, variate, NullVariate, new BirthDeathTransform, birthDeath, /*birth_choice, */ birth_ratio)
@@ -61,7 +61,8 @@ class CoalApp(val y: Seq[Int], val L: Int, val Kmax: Int, val lambda: Double, va
     for (i <- 0 until updates) {
       sampler.sample(configuration)
       visitor.visit(configuration, sampler)
-      list += new CoalConfiguration(configuration)
+      //if (i%100==0)
+        list += new CoalConfiguration(configuration)
     }
     visitor.end(configuration, sampler)
     println("all done")
@@ -91,10 +92,18 @@ class CoalApp(val y: Seq[Int], val L: Int, val Kmax: Int, val lambda: Double, va
     val end = System.currentTimeMillis
     println("posterior mean computed in " + (end - start) + " ms (" + (end - start) / 1000 + " s)")
   }
+  def posteriorChangePointDistribution(list: Seq[CoalConfiguration], condition: Int, file: File) {
+    val start = System.currentTimeMillis
+    val writer = new PrintWriter(file)
+    val parList = list.par.filter(_.K == condition).map { x => x.S.filter(_>0).map { s => writer.write("" + s + "\n") } }
+    writer.close
+    val end = System.currentTimeMillis
+    println("posterior change point distribution computed in " + (end - start) + " ms (" + (end - start) / 1000 + " s)")
+  }
 }
 
 object CoalApp extends App {
-  val y = Source.fromFile("./src/main/resources/coal_green.csv").getLines.map(x => x.toInt).toSeq
+  val y = Source.fromFile("./src/main/resources/coal_green.csv").getLines.map(_.toInt).toSeq
   //  val parameters = new Parameters("./src/main/resources/coal_parameters.xml")
   //  val L = parameters.getInt("L")
   //  val Kmax = parameters.getInt("kmax")
@@ -104,8 +113,11 @@ object CoalApp extends App {
   //  val burnin = parameters.getInt("burnin")
   //  val updates = parameters.getInt("updates")
   //  val app = new CoalApp(y, L, Kmax, lambda, alpha, beta, burnin, updates)
-  val app = new CoalApp(y, 40907, 30, 3, 1, 200, 4000, 10000)
   implicit val rng = new MersenneTwister(21)
+  val app = new CoalApp(y, 40907, 30, 3, 1, 200, 10000, 100000)
   val l = app.apply
   app.posteriorMean(l.toSeq, new File("result.txt"))
+  app.posteriorChangePointDistribution(l.toSeq, 1, new File("result_point_1.txt"))
+  app.posteriorChangePointDistribution(l.toSeq, 2, new File("result_point_2.txt"))
+  app.posteriorChangePointDistribution(l.toSeq, 3, new File("result_point_3.txt"))
 }
