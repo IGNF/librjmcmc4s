@@ -13,7 +13,8 @@ resolvers ++= Seq(
   "Scala Tools Snapshots" at "http://scala-tools.org/repo-snapshots/",
   "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases/",
   "OpenGeo repo" at "http://download.osgeo.org/webdav/geotools/",
-  "Bounless" at "http://repo.boundlessgeo.com/main/"
+  "Bounless" at "http://repo.boundlessgeo.com/main/",
+  "central" at "http://central.maven.org/maven2/"
 )
 
 // add a test dependency on ScalaCheck
