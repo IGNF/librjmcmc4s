@@ -30,7 +30,7 @@ libraryDependencies += "org.geotools" % "gt-epsg-wkt" % "13.1"
 
 libraryDependencies += "org.geotools" % "gt-cql" % "13.1"
 
-libraryDependencies += "javax.media" % "jai_core" % "1.1.3"
+libraryDependencies += "javax.media" % "jai_core" % "1.1.3" from "http://download.osgeo.org/webdav/geotools/javax/media/jai_core/1.1.3/jai_core-1.1.3.jar"
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
 
