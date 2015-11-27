@@ -13,8 +13,7 @@ resolvers ++= Seq(
   "Scala Tools Snapshots" at "http://scala-tools.org/repo-snapshots/",
   "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases/",
   "OpenGeo repo" at "http://download.osgeo.org/webdav/geotools/",
-  "Bounless" at "http://repo.boundlessgeo.com/main/",
-  "central" at "http://central.maven.org/maven2/"
+  "Bounless" at "http://repo.boundlessgeo.com/main/"
 )
 
 // add a test dependency on ScalaCheck
@@ -30,6 +29,8 @@ libraryDependencies += "org.geotools" % "gt-shapefile" % "13.1"
 libraryDependencies += "org.geotools" % "gt-epsg-wkt" % "13.1"
 
 libraryDependencies += "org.geotools" % "gt-cql" % "13.1"
+
+libraryDependencies += "javax.media" % "jai_core" % "1.1.3"
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.5"
 
