@@ -22,6 +22,7 @@ object RasterVariateTest extends App {
     val result = variate.compute(2)
     val value = result._1
     val pdf = result._2
+    println("pdf = "+pdf)
     if (pdf == 0) println("sampling failed")
     if (pdf != variate.pdf(value)) println("pdf mismatch : " + pdf + "=" + variate.pdf(value))
     val x = (value(0) * size(0)).toInt
